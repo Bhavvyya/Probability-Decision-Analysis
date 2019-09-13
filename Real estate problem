@@ -1,0 +1,20 @@
+# import the packages
+import pandas as pd
+import numpy as np
+# set sample size parameters
+size = 10000
+# set data distribution
+states = ['Good Economy' , 'Bad Economy']
+probabilities = [0.6, 0.4]
+apartment = {'Good Economy': 50, 'Bad Economy': 30}
+office = {'Good Economy': 100, 'Bad Economy': -40}
+warehouse = {'Good Economy': 30, 'Bad Economy': 10}
+# generate data by sampling from the above data distribution
+state_realizations = np.random.choice(states, size=size, p=probabilities)
+data = pd.DataFrame({'state':state_realizations})
+data['apartment'] = [apartment[i] for i in data.state]
+data['office'] = [office[i] for i in data.state]
+data['warehouse'] = [warehouse[i] for i in data.state]
+data['Decide after observe'] = [max(data.iloc[i][1:3]) for i in data.index]
+emv = data.agg('mean')
+evpi = emv['Decide after observe'] - max(emv['apartment'],emv['office'], emv['warehouse'])
