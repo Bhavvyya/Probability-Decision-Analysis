@@ -1,0 +1,18 @@
+# import the packages
+import pandas as pd
+import numpy as np
+# set sample size parameters
+size = 10000
+# set data distribution
+states = ['State 1' , 'State 2' , 'State 3', 'State 4']
+probabilities = [0.2 , 0.1 , 0.3, 0.4]
+alone = {'State 1': 4, 'State 2': 13, 'State 3':-5, 'State 4':7}
+jv = {'State 1': 6, 'State 2': 9, 'State 3':-1, 'State 4':3}
+# generate data by sampling from the above data distribution
+state_realizations = np.random.choice(states, size=size, p=probabilities)
+data = pd.DataFrame({'state':state_realizations})
+data['Alone'] = [alone[i] for i in data.state]
+data['JV'] = [jv[i] for i in data.state]
+data['Decide after observe'] = [alone[i] if alone[i]>jv[i] else jv[i] for i in data.state]
+emv = data.agg('mean')
+evpi = emv['Decide after observe'] - max(emv['Alone'],emv['JV'])
